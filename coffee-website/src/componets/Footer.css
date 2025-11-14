@@ -1,0 +1,127 @@
+.footer {
+  background: linear-gradient(to right, #1c1c1c, #0f0f0f);
+  color: #eee;
+  font-family: 'Poppins', sans-serif;
+  padding-top: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: auto;
+  padding: 15px 0px;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-logo h2 {
+  font-size: 28px;
+  color: #ffb347;
+  margin-bottom: 10px;
+}
+
+.footer-logo p {
+  font-size: 14px;
+  color: #bbb;
+}
+
+.footer-links {
+    text-align: center;
+}
+
+.footer-links h3,
+.footer-contact h3,
+.footer-subscribe h3 {
+  margin-bottom: 10px;
+  color: #fff;
+  font-size: 18px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: #bbb;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: #ffb347;
+}
+
+.footer-contact p {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.footer-subscribe p {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.subscribe-box {
+  margin-top: 10px;
+  display: flex;
+}
+
+.subscribe-box input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+  background: #2c2c2c;
+  color: #fff;
+}
+
+.subscribe-box button {
+  padding: 10px 16px;
+  background: #ffb347;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.subscribe-box button:hover {
+  background: #e09f3e;
+}
+
+.social-icons {
+  margin-top: 15px;
+}
+
+.social-icons a {
+  margin-right: 12px;
+  color: #ccc;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.social-icons a:hover {
+  color: #ffb347;
+}
+
+.footer-bottom {
+  text-align: center;
+  background: #0a0a0a;
+  font-size: 13px;
+  color: #777;
+  border-top: 1px solid #222;
+}

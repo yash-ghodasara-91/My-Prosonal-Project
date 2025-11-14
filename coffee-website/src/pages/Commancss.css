@@ -1,0 +1,591 @@
+/* HOME PAGESH */
+.home {
+  height: 90vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("../imagesh/Home-banner-1.jpeg") center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  animation: fadeIn 1.5s ease;
+}
+
+.home-content {
+  text-align: center;
+  max-width: 600px;
+}
+
+.home-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  animation: slideInTop 1s ease forwards;
+}
+
+.home-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  animation: slideInTop 1.3s ease forwards;
+}
+
+.home-btn {
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #6f4e37;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.home-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInTop {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* MENU PAGESH */
+
+.menu-page {
+  padding: 3rem 2rem;
+  background: #f9f6f1;
+  color: #333;
+}
+
+.menu-heading {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #3e2723;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.menu-subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.menu-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.menu-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  position: relative;
+}
+
+.menu-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+}
+
+.image-wrapper {
+  position: relative;
+}
+
+.menu-image {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+
+.menu-info {
+  padding: 1rem;
+  text-align: left;
+}
+
+.menu-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #4e342e;
+  margin-bottom: 0.3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-description {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #795548;
+  background: #f1e0d6;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.popular-tag {
+  font-size: 0.7rem;
+  color: #fff;
+  background: #ff9800;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.4rem;
+}
+
+.popular-card {
+  border: 2px solid #ff9800;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Remove these if no longer needed */
+.popular-tag,
+.popular-card {
+  display: none !important;
+}
+
+/* New: Wrap button at bottom of card */
+.button-container {
+  margin-top: -17%;
+  text-align: center;
+  margin-left: 38%;
+}
+
+/* Existing button style stays the same or can be updated */
+.add-to-cart-btn {
+  background: #795548;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+  background: #5d4037;
+}
+
+/* ABOUT PAGESH */
+/* src/About.css */
+.about-section {
+  padding: 60px 30px;
+  max-width: 1200px;
+  margin: 40px auto;
+  line-height: 1.7;
+  color: #4B3832;
+  /* Rich coffee-brown color */
+  background-color: #fff8f1;
+  /* Soft, creamy background */
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.about-section:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.about-title {
+  font-size: 2.6rem;
+  margin-bottom: 25px;
+  color: #6B4226;
+  /* Dark brown for headlines */
+  text-align: center;
+  font-weight: 700;
+}
+
+.about-subtitle {
+  font-size: 1.6rem;
+  margin-top: 35px;
+  margin-bottom: 15px;
+  color: #8B5E3C;
+  /* Medium brown accent */
+  border-bottom: 2px solid #c49b75;
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+.about-paragraph {
+  font-size: 1.15rem;
+  margin-bottom: 20px;
+  color: #5a4633;
+  /* Subtle brown for readability */
+}
+
+.about-list {
+  font-size: 1.15rem;
+  margin-left: 25px;
+  margin-bottom: 25px;
+  list-style-type: disc;
+  color: #5a4633;
+}
+
+.about-list li {
+  margin-bottom: 10px;
+}
+
+.about-section a {
+  color: #a25f2a;
+  text-decoration: none;
+  border-bottom: 1px solid #a25f2a;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+.about-section a:hover {
+  color: #6B4226;
+  border-color: #6B4226;
+}
+
+/* Optional modern flair: typography */
+.about-title,
+.about-subtitle {
+  font-family: 'Merriweather', serif;
+}
+
+/* Smooth fade-in effect */
+.about-section {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* CONTACT PAGESH */
+
+/* Contact.css */
+.contact-container {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 50px;
+  background-color: #fffaf5;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contact-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #6b4226;
+  animation: fadeIn 1s ease forwards;
+}
+
+.contact-description {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 30px;
+  color: #4b3832;
+  animation: fadeIn 1s ease 0.3s forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.contact-form .form-group {
+  margin-bottom: 20px;
+  animation: fadeIn 1s ease forwards;
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.contact-form .form-group:nth-child(1) {
+  animation-delay: 0.4s;
+}
+
+.contact-form .form-group:nth-child(2) {
+  animation-delay: 0.6s;
+}
+
+.contact-form .form-group:nth-child(3) {
+  animation-delay: 0.8s;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.contact-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #6b4226;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d3bfa8;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: #a25f2a;
+  transform: scale(1.02);
+}
+
+.contact-btn {
+  display: block;
+  width: 100%;
+  background-color: #a25f2a;
+  color: #fff;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.contact-btn:hover {
+  background-color: #6b4226;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* GALLERY PAGRSH */
+
+/* Gallery.css */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #fef8f3;
+  color: #4b3832;
+}
+
+.gallery-container {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 20px;
+  text-align: center;
+  animation: fadeIn 1s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.gallery-title {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  color: #6b4226;
+}
+
+.gallery-description {
+  font-size: 1rem;
+  margin-bottom: 30px;
+  color: #4b3832;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transform: translateY(20px);
+  animation: itemFadeIn 0.8s ease forwards;
+  opacity: 0;
+}
+
+.gallery-item:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.gallery-item:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.gallery-item:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+.gallery-item:nth-child(4) {
+  animation-delay: 0.8s;
+}
+
+.gallery-item:nth-child(5) {
+  animation-delay: 1s;
+}
+
+.gallery-item:nth-child(6) {
+  animation-delay: 1.2s;
+}
+
+@keyframes itemFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 300px;
+  display: block;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+  filter: brightness(0.9);
+}
+
+.gallery-image-name {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* OFFERS PAGESH */
+
+.offers-container {
+  padding: 3rem 2rem;
+  background: #f8f8f8;
+  color: #333;
+  text-align: center;
+}
+
+.offers-title {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  color: #3e2723;
+  font-weight: 700;
+}
+
+.offers-description {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.offer-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.offer-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.offer-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.8rem;
+}
+
+.offer-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #4e342e;
+  margin-bottom: 0.3rem;
+}
+
+.offer-description {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 0.4rem;
+}
+
+.offer-comment {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

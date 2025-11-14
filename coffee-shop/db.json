@@ -1,0 +1,157 @@
+{
+  "users": [],
+  "orders": [
+    {
+      "items": [
+        {
+          "id": 2,
+          "name": "Latte",
+          "description": "A creamy coffee with a perfect balance of espresso and steamed milk. Smooth and comforting.",
+          "price": 3.5,
+          "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93",
+          "category": "Hot Coffee",
+          "rating": 4.9,
+          "reviews": 245,
+          "inStock": true,
+          "quantity": 1
+        }
+      ],
+      "total": 3.8500000000000005,
+      "shipping": {
+        "firstName": "Yash",
+        "lastName": "ghodasara",
+        "email": "ghodasarayash33@gmail.com",
+        "phone": "08849180820",
+        "address": "Kaylas nagar meshvan sarkari hospital ni pache",
+        "city": "Meshvan",
+        "zipCode": "362227"
+      },
+      "paymentMethod": "cash",
+      "status": "confirmed",
+      "createdAt": "2025-11-11T13:02:17.762Z",
+      "id": 1
+    },
+    {
+      "items": [
+        {
+          "id": 17,
+          "name": "Green Tea",
+          "description": "Fresh and light green tea. Antioxidant-rich and refreshing.",
+          "price": 2.5,
+          "image": "https://images.unsplash.com/photo-1608431421944-0b2d30075cf0",
+          "category": "Tea",
+          "rating": 4.5,
+          "reviews": 98,
+          "inStock": true,
+          "quantity": 2
+        },
+        {
+          "id": 3,
+          "name": "Cappuccino",
+          "description": "A classic coffee with equal parts espresso, steamed milk, and foam. The perfect morning pick-me-up.",
+          "price": 3.5,
+          "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc",
+          "category": "Hot Coffee",
+          "rating": 4.7,
+          "reviews": 189,
+          "inStock": true,
+          "quantity": 2
+        },
+        {
+          "id": 1,
+          "name": "Espresso",
+          "description": "A strong, full-bodied coffee with a rich aroma. Perfect for those who love intense coffee flavor.",
+          "price": 2.5,
+          "image": "https://images.unsplash.com/photo-1511920170033-f8396924c348",
+          "category": "Hot Coffee",
+          "rating": 4.8,
+          "reviews": 120,
+          "inStock": true,
+          "quantity": 2
+        }
+      ],
+      "total": 18.700000000000003,
+      "shipping": {
+        "firstName": "ghodasarayash33",
+        "lastName": "ghodasara",
+        "email": "ghodasarayash33@gmail.com",
+        "phone": "08849180820",
+        "address": "Kaylas nagar meshvan sarkari hospital ni pache",
+        "city": "Meshvan",
+        "zipCode": "362227"
+      },
+      "paymentMethod": "cash",
+      "status": "confirmed",
+      "createdAt": "2025-11-11T14:22:29.772Z",
+      "id": 2
+    },
+    {
+      "items": [
+        {
+          "id": 2,
+          "name": "Latte",
+          "description": "A creamy coffee with a perfect balance of espresso and steamed milk. Smooth and comforting.",
+          "price": 3.5,
+          "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93",
+          "category": "Hot Coffee",
+          "rating": 4.9,
+          "reviews": 245,
+          "inStock": true,
+          "quantity": 1
+        },
+        {
+          "id": 8,
+          "name": "Cortado",
+          "description": "Equal parts espresso and warm milk. Balanced and smooth.",
+          "price": 3.25,
+          "image": "https://images.unsplash.com/photo-1511920170033-f8396924c348",
+          "category": "Hot Coffee",
+          "rating": 4.6,
+          "reviews": 87,
+          "inStock": true,
+          "quantity": 1
+        },
+        {
+          "id": 9,
+          "name": "Iced Latte",
+          "description": "Refreshing cold latte with espresso and chilled milk over ice.",
+          "price": 4,
+          "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87",
+          "category": "Cold Coffee",
+          "rating": 4.8,
+          "reviews": 167,
+          "inStock": true,
+          "quantity": 1
+        },
+        {
+          "id": 13,
+          "name": "Arabica Premium Blend",
+          "description": "Premium Arabica beans from Ethiopia. Notes of chocolate and berries. 500g pack.",
+          "price": 18.99,
+          "image": "https://images.unsplash.com/photo-1461988091159-192b6df7054f",
+          "category": "Coffee Beans",
+          "rating": 4.9,
+          "reviews": 312,
+          "inStock": true,
+          "quantity": 1
+        }
+      ],
+      "total": 32.714,
+      "shipping": {
+        "firstName": "ghodasarayash33",
+        "lastName": "ghodasara",
+        "email": "ghodasarayash33@gmail.com",
+        "phone": "08849180820",
+        "address": "Kaylas nagar meshvan sarkari hospital ni pache",
+        "city": "Meshvan",
+        "zipCode": "362227"
+      },
+      "paymentMethod": "cash",
+      "status": "confirmed",
+      "createdAt": "2025-11-11T15:44:47.622Z",
+      "id": 3
+    }
+  ],
+  "products": [],
+  "wishlists": []
+}
