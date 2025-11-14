@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAppSelector } from '../store/hooks';
+import { selectUser } from '../store/userSlice';
+import { sendContactMessageAPI } from '../utils/api';
 
 const Contact = () => {
+  const user = useAppSelector(selectUser);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -8,17 +12,39 @@ const Contact = () => {
   });
   const [submitted, setSubmitted] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
+        email: user?.email || '',
+      }));
+    }
+  }, [user]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, this would send the message to a backend
-    setSubmitted(true);
-    setFormData({ name: '', email: '', message: '' });
-    setTimeout(() => setSubmitted(false), 5000);
+    const payload = {
+      name: formData.name || `${user?.firstName || ''} ${user?.lastName || ''}`.trim(),
+      email: formData.email || user?.email || '',
+      message: formData.message,
+      userId: user?._id || user?.id || undefined,
+    };
+    try {
+      const data = await sendContactMessageAPI(payload);
+      if (data) {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setSubmitted(false), 5000);
+      }
+    } catch {
+      setSubmitted(false);
+    }
   };
 
   return (
@@ -142,7 +168,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your full name"
-                    required
+                    required={!user}
                     className="w-full px-4 py-3 bg-secondary dark:bg-secondary-dark text-text-primary dark:text-text-primary-dark rounded-xl border-2 border-border dark:border-border-dark focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                   />
                 </div>
@@ -158,7 +184,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="your.email@example.com"
-                    required
+                    required={!user}
                     className="w-full px-4 py-3 bg-secondary dark:bg-secondary-dark text-text-primary dark:text-text-primary-dark rounded-xl border-2 border-border dark:border-border-dark focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all"
                   />
                 </div>

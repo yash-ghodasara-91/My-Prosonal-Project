@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../store/hooks';
 import { selectUser } from '../../store/userSlice';
+import { getCategoriesAPI } from '../../utils/api';
 
 const AdminProducts = () => {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ const AdminProducts = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -25,6 +28,7 @@ const AdminProducts = () => {
       return;
     }
     fetchProducts();
+    fetchCategories();
   }, [user, navigate]);
 
   const fetchProducts = async () => {
@@ -39,9 +43,17 @@ const AdminProducts = () => {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const data = await getCategoriesAPI();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
     const formDataToSend = new FormData();
     
     Object.keys(formData).forEach(key => {
@@ -63,8 +75,8 @@ const AdminProducts = () => {
 
       const response = await fetch(url, {
         method,
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formDataToSend
+        body: formDataToSend,
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -75,7 +87,7 @@ const AdminProducts = () => {
           name: '',
           description: '',
           price: '',
-          category: '',
+          category: categories[0]?.name || '',
           inStock: true,
           image: null
         });
@@ -89,10 +101,9 @@ const AdminProducts = () => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/admin/products/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -129,14 +140,14 @@ const AdminProducts = () => {
             onClick={() => {
               setShowForm(!showForm);
               setEditingProduct(null);
-              setFormData({
-                name: '',
-                description: '',
-                price: '',
-                category: '',
-                inStock: true,
-                image: null
-              });
+        setFormData({
+          name: '',
+          description: '',
+          price: '',
+          category: categories[0]?.name || '',
+          inStock: true,
+          image: null
+        });
             }}
             className="bg-[#8B4513] text-white px-6 py-3 rounded-lg border-2 border-[#6B3410] hover:bg-[#6B3410] transition-all"
           >
@@ -184,13 +195,42 @@ const AdminProducts = () => {
                 </div>
                 <div>
                   <label className="block text-text-primary mb-2">Category *</label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-4 py-2 bg-secondary rounded-lg border-2 border-[#6B3410] focus:border-[#8B4513] focus:outline-none"
                     required
-                  />
+                  >
+                    {categories.map(c => (
+                      <option key={c._id} value={c.name}>{c.name}</option>
+                    ))}
+                  </select>
+                  <div className="mt-2 flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="New category"
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value)}
+                      className="flex-1 px-4 py-2 bg-secondary rounded-lg border-2 border-[#6B3410] focus:border-[#8B4513] focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (!newCategory.trim()) return;
+                        await fetch('http://localhost:5000/api/admin/categories', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          credentials: 'include',
+                          body: JSON.stringify({ name: newCategory.trim() })
+                        });
+                        setNewCategory('');
+                        fetchCategories();
+                      }}
+                      className="px-4 py-2 bg-[#8B4513] text-white rounded-lg border-2 border-[#6B3410] hover:bg-[#6B3410]"
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
               </div>
               <div>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/hooks';
 import { register } from '../store/userSlice';
+import { setWishlistItems } from '../store/wishlistSlice';
+import { getWishlistAPI } from '../utils/api';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -52,6 +54,7 @@ const Signup = () => {
             lastName: formData.lastName,
             phone: formData.phone,
           }),
+          credentials: 'include'
         });
 
         const data = await response.json();
@@ -61,13 +64,24 @@ const Signup = () => {
           return;
         }
 
-        // Save token
-        localStorage.setItem('token', data.token);
-        
         // Update Redux store
         dispatch(register(data.user));
+        try {
+          const wishlist = await getWishlistAPI();
+          if (wishlist && wishlist.products) {
+            const mapped = wishlist.products.map(p => ({
+              id: p._id,
+              name: p.name,
+              description: p.description,
+              price: p.price,
+              image: p.image?.startsWith('http') ? p.image : (p.image ? `http://localhost:5000${p.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+            }));
+            dispatch(setWishlistItems(mapped));
+          }
+        } catch {}
         navigate('/');
       } catch (error) {
+        console.error(error);
         setErrors({ email: 'Something went wrong. Please try again.' });
       }
     }

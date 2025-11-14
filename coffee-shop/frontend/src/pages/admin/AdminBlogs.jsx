@@ -40,7 +40,6 @@ const AdminBlogs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
     const formDataToSend = new FormData();
     
     Object.keys(formData).forEach(key => {
@@ -62,8 +61,8 @@ const AdminBlogs = () => {
 
       const response = await fetch(url, {
         method,
-        headers: { 'Authorization': `Bearer ${token}` },
-        body: formDataToSend
+        body: formDataToSend,
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -87,10 +86,9 @@ const AdminBlogs = () => {
     if (!window.confirm('Are you sure you want to delete this blog?')) return;
 
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/admin/blogs/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        credentials: 'include'
       });
 
       if (response.ok) {

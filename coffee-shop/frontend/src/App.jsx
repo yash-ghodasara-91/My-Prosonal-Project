@@ -1,4 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useAppDispatch } from './store/hooks';
+import { login } from './store/userSlice';
+import { setWishlistItems } from './store/wishlistSlice';
+import { getMeAPI, getWishlistAPI } from './utils/api';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -22,6 +27,35 @@ import AdminBlogs from './pages/admin/AdminBlogs';
 import AdminOrders from './pages/admin/AdminOrders';
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const data = await getMeAPI();
+        if (data && data.user) {
+          dispatch(login(data.user));
+          try {
+            const wishlist = await getWishlistAPI();
+            if (wishlist && wishlist.products) {
+              const mapped = wishlist.products.map(p => ({
+                id: p._id,
+                name: p.name,
+                description: p.description,
+                price: p.price,
+                image: p.image?.startsWith('http') ? p.image : (p.image ? `http://localhost:5000${p.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+              }));
+              dispatch(setWishlistItems(mapped));
+            }
+          } catch {}
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    };
+    init();
+  }, [dispatch]);
+
   return (
     <Router>
       <div className="bg-[#e3d1c4] dark:bg-[#e3d1c4] font-sans min-h-screen flex flex-col transition-colors duration-300">

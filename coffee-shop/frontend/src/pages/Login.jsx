@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/hooks';
 import { login } from '../store/userSlice';
+import { setWishlistItems } from '../store/wishlistSlice';
+import { getWishlistAPI } from '../utils/api';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -39,6 +41,7 @@ const Login = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
+          credentials: 'include'
         });
 
         const data = await response.json();
@@ -48,12 +51,23 @@ const Login = () => {
           return;
         }
 
-        // Save token
-        localStorage.setItem('token', data.token);
-        
         // Update Redux store
         dispatch(login(data.user));
-        navigate('/');
+        try {
+          const wishlist = await getWishlistAPI();
+          if (wishlist && wishlist.products) {
+            const mapped = wishlist.products.map(p => ({
+              id: p._id,
+              name: p.name,
+              description: p.description,
+              price: p.price,
+              image: p.image?.startsWith('http') ? p.image : (p.image ? `http://localhost:5000${p.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+            }));
+            dispatch(setWishlistItems(mapped));
+          }
+        } catch {}
+        const redirectPath = data.user.role === 'admin' ? '/admin/dashboard' : '/';
+        navigate(redirectPath);
       } catch (error) {
         setLoginError('Something went wrong. Please try again.');
       }

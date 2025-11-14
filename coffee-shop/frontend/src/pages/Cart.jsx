@@ -1,6 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { selectCartItems, selectCartTotal, removeFromCart, updateQuantity, clearCart } from '../store/cartSlice';
+import { selectCartItems, selectCartTotal, setCartItems } from '../store/cartSlice';
+import { getCartAPI, updateCartItemAPI, removeFromCartAPI, clearCartAPI } from '../utils/api';
 import { selectUser } from '../store/userSlice';
 
 const Cart = () => {
@@ -9,6 +11,27 @@ const Cart = () => {
   const cartItems = useAppSelector(selectCartItems);
   const cartTotal = useAppSelector(selectCartTotal);
   const user = useAppSelector(selectUser);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      const cart = await getCartAPI();
+      if (cart && cart.items) {
+        const mapped = cart.items.map(ci => ({
+          id: ci.product._id,
+          name: ci.product.name,
+          description: ci.product.description,
+          price: ci.product.price,
+          image: ci.product.image?.startsWith('http') ? ci.product.image : (ci.product.image ? `http://localhost:5000${ci.product.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+          quantity: ci.quantity,
+          cartItemId: ci._id
+        }));
+        dispatch(setCartItems(mapped));
+      }
+    };
+    if (user) {
+      fetchCart();
+    }
+  }, [user, dispatch]);
 
   const handleCheckout = () => {
     if (!user) {
@@ -75,21 +98,68 @@ const Cart = () => {
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-gray-600 rounded-lg">
                   <button
-                    onClick={() => dispatch(updateQuantity({ productId: item.id, quantity: item.quantity - 1 }))}
+                    onClick={async () => {
+                      const newQty = item.quantity - 1;
+                      await updateCartItemAPI(item.cartItemId, newQty);
+                      const cart = await getCartAPI();
+                      if (cart && cart.items) {
+                        const mapped = cart.items.map(ci => ({
+                          id: ci.product._id,
+                          name: ci.product.name,
+                          description: ci.product.description,
+                          price: ci.product.price,
+                          image: ci.product.image?.startsWith('http') ? ci.product.image : (ci.product.image ? `http://localhost:5000${ci.product.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+                          quantity: ci.quantity,
+                          cartItemId: ci._id
+                        }));
+                        dispatch(setCartItems(mapped));
+                      }
+                    }}
                     className="px-3 py-2 text-text-primary hover:bg-gray-700 transition-colors"
                   >
                     −
                   </button>
                     <span className="px-4 py-2 text-text-primary">{item.quantity}</span>
                     <button
-                      onClick={() => dispatch(updateQuantity({ productId: item.id, quantity: item.quantity + 1 }))}
+                      onClick={async () => {
+                        const newQty = item.quantity + 1;
+                        await updateCartItemAPI(item.cartItemId, newQty);
+                        const cart = await getCartAPI();
+                        if (cart && cart.items) {
+                          const mapped = cart.items.map(ci => ({
+                            id: ci.product._id,
+                            name: ci.product.name,
+                            description: ci.product.description,
+                            price: ci.product.price,
+                            image: ci.product.image?.startsWith('http') ? ci.product.image : (ci.product.image ? `http://localhost:5000${ci.product.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+                            quantity: ci.quantity,
+                            cartItemId: ci._id
+                          }));
+                          dispatch(setCartItems(mapped));
+                        }
+                      }}
                       className="px-3 py-2 text-text-primary hover:bg-gray-700 transition-colors"
                     >
                       +
                     </button>
                   </div>
                   <button
-                    onClick={() => dispatch(removeFromCart(item.id))}
+                    onClick={async () => {
+                      await removeFromCartAPI(item.cartItemId);
+                      const cart = await getCartAPI();
+                      if (cart && cart.items) {
+                        const mapped = cart.items.map(ci => ({
+                          id: ci.product._id,
+                          name: ci.product.name,
+                          description: ci.product.description,
+                          price: ci.product.price,
+                          image: ci.product.image?.startsWith('http') ? ci.product.image : (ci.product.image ? `http://localhost:5000${ci.product.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+                          quantity: ci.quantity,
+                          cartItemId: ci._id
+                        }));
+                        dispatch(setCartItems(mapped));
+                      }
+                    }}
                     className="text-red-400 hover:text-red-300 transition-colors"
                   >
                     <svg
@@ -117,7 +187,10 @@ const Cart = () => {
             ))}
             <div className="mt-6 pt-6 border-t border-gray-700">
               <button
-                onClick={() => dispatch(clearCart())}
+                onClick={async () => {
+                  await clearCartAPI();
+                  dispatch(setCartItems([]));
+                }}
                 className="text-red-400 hover:text-red-300 transition-colors"
               >
                 Clear Cart

@@ -1,13 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const getInitialUser = () => {
-  const saved = localStorage.getItem('user');
-  return saved ? JSON.parse(saved) : null;
+  return null;
 };
 
 const getInitialOrders = () => {
-  const saved = localStorage.getItem('orders');
-  return saved ? JSON.parse(saved) : [];
+  return [];
 };
 
 const userSlice = createSlice({
@@ -19,15 +17,12 @@ const userSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.user = action.payload;
-      localStorage.setItem('user', JSON.stringify(action.payload));
     },
     logout: (state) => {
       state.user = null;
-      localStorage.removeItem('user');
     },
     register: (state, action) => {
       state.user = action.payload;
-      localStorage.setItem('user', JSON.stringify(action.payload));
     },
     addOrder: (state, action) => {
       const newOrder = {
@@ -36,11 +31,9 @@ const userSlice = createSlice({
         date: new Date().toISOString(),
       };
       state.orders = [newOrder, ...state.orders];
-      localStorage.setItem('orders', JSON.stringify(state.orders));
     },
     updateUser: (state, action) => {
       state.user = { ...state.user, ...action.payload };
-      localStorage.setItem('user', JSON.stringify(state.user));
     },
   },
 });

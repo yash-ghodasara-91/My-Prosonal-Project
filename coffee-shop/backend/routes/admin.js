@@ -14,8 +14,10 @@ const {
   deleteBlog
 } = require('../controllers/blogController');
 const { getStats } = require('../controllers/adminController');
+const { getMessages } = require('../controllers/contactController');
 const { adminMiddleware } = require('../middleware/admin');
 const { uploadProduct, uploadBlog } = require('../middleware/upload');
+const { createCategory, updateCategory, deleteCategory } = require('../controllers/categoryController');
 
 const router = express.Router();
 
@@ -35,5 +37,13 @@ router.delete('/blogs/:id', adminMiddleware, deleteBlog);
 // Orders
 router.get('/orders', adminMiddleware, getAllOrders);
 router.put('/orders/:id/status', adminMiddleware, updateOrderStatus);
+
+// Categories
+router.post('/categories', adminMiddleware, createCategory);
+router.put('/categories/:id', adminMiddleware, updateCategory);
+router.delete('/categories/:id', adminMiddleware, deleteCategory);
+
+// Contact Messages
+router.get('/messages', adminMiddleware, getMessages);
 
 module.exports = router;

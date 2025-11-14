@@ -1,23 +1,49 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { getCategoriesAPI, getProductsAPI } from '../utils/api';
 import ProductCard from '../components/ProductCard';
-import { getProductsAPI } from '../utils/api';
 
 const Home = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'All');
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState(['All']);
 
   useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory, searchQuery]);
+    const run = async () => {
+      setLoading(true);
+      const products = await getProductsAPI(searchQuery, selectedCategory);
+      setFilteredProducts(products);
+      setLoading(false);
+    };
+    run();
+  }, [searchQuery, selectedCategory]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const cats = await getCategoriesAPI();
+        const names = Array.isArray(cats) ? cats.map(c => c.name) : [];
+        setCategories(['All', ...names]);
+      } catch {
+        setCategories(['All']);
+      }
+    };
+    loadCategories();
+  }, []);
+
+  useEffect(() => {
+    const params = {};
+    if (searchQuery) params.search = searchQuery;
+    if (selectedCategory && selectedCategory !== 'All') params.category = selectedCategory;
+    setSearchParams(params);
+  }, [searchQuery, selectedCategory, setSearchParams]);
 
   const fetchProducts = async () => {
     setLoading(true);
-    const products = await getProductsAPI(searchQuery, selectedCategory);
+    const products = await getProductsAPI(searchQuery, 'All');
     
     // Extract unique categories
     const uniqueCategories = ['All', ...new Set(products.map(p => p.category))];

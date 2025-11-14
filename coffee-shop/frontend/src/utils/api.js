@@ -1,24 +1,17 @@
 // Backend API helper functions
 const API_BASE = 'http://localhost:5000/api';
 
-// Get auth token from localStorage
-const getToken = () => localStorage.getItem('token');
-
-// Make authenticated request
+// Make authenticated request (cookie-based)
 const authFetch = async (url, options = {}) => {
-  const token = getToken();
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
   };
 
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
   return fetch(`${API_BASE}${url}`, {
     ...options,
     headers,
+    credentials: 'include'
   });
 };
 
@@ -28,6 +21,7 @@ export const loginAPI = async (email, password) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
+    credentials: 'include'
   });
   return response.json();
 };
@@ -37,12 +31,36 @@ export const signupAPI = async (userData) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userData),
+    credentials: 'include'
   });
   return response.json();
 };
 
 export const getMeAPI = async () => {
   const response = await authFetch('/auth/me');
+  return response.json();
+};
+
+export const updateMeAPI = async (userData) => {
+  const response = await authFetch('/auth/me', {
+    method: 'PUT',
+    body: JSON.stringify(userData),
+  });
+  return response.json();
+};
+
+export const sendContactMessageAPI = async (payload) => {
+  const response = await fetch(`${API_BASE}/contact`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(payload),
+  });
+  return response.json();
+};
+
+export const getAdminMessagesAPI = async () => {
+  const response = await authFetch('/admin/messages');
   return response.json();
 };
 
@@ -134,12 +152,17 @@ export const removeFromWishlistAPI = async (productId) => {
 
 // Blog APIs
 export const getBlogsAPI = async () => {
-  const response = await fetch(`${API_BASE}/blogs`);
+  const response = await fetch(`${API_BASE}/blogs`, { credentials: 'include' });
   return response.json();
 };
 
 export const getBlogByIdAPI = async (id) => {
-  const response = await fetch(`${API_BASE}/blogs/${id}`);
+  const response = await fetch(`${API_BASE}/blogs/${id}`, { credentials: 'include' });
+  return response.json();
+};
+
+export const getCategoriesAPI = async () => {
+  const response = await fetch(`${API_BASE}/categories`, { credentials: 'include' });
   return response.json();
 };
 

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { selectCartItems, selectCartTotal, clearCart } from '../store/cartSlice';
-import { selectUser, addOrder } from '../store/userSlice';
-import { createOrder } from '../api';
+import { selectCartItems, selectCartTotal, setCartItems } from '../store/cartSlice';
+import { selectUser } from '../store/userSlice';
+import { createOrderAPI } from '../utils/api';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -70,29 +70,24 @@ const Checkout = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      const order = {
-        items: cartItems,
-        total: cartTotal * 1.1,
-        shipping: {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          city: formData.city,
-          zipCode: formData.zipCode,
-        },
-        paymentMethod: formData.paymentMethod,
-        status: 'confirmed',
-      };
       (async () => {
         try {
-          await createOrder(order);
-        } catch (_) {
-          // continue even if json-server isn't running
+          await createOrderAPI({
+            shipping: {
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              email: formData.email,
+              phone: formData.phone,
+              address: formData.address,
+              city: formData.city,
+              zipCode: formData.zipCode,
+            },
+            paymentMethod: formData.paymentMethod,
+          });
+        } catch (e) {
+          console.warn(e);
         }
-        dispatch(addOrder(order));
-        dispatch(clearCart());
+        dispatch(setCartItems([]));
         navigate('/orders');
       })();
     }

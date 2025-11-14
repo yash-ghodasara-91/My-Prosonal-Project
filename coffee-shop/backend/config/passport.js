@@ -24,8 +24,18 @@ passport.use(new LocalStrategy({
 }));
 
 // JWT Strategy for protected routes
+const cookieExtractor = (req) => {
+  if (req && req.cookies && req.cookies.token) {
+    return req.cookies.token;
+  }
+  return null;
+};
+
 passport.use(new JWTStrategy({
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: ExtractJwt.fromExtractors([
+    ExtractJwt.fromAuthHeaderAsBearerToken(),
+    cookieExtractor
+  ]),
   secretOrKey: process.env.JWT_SECRET || 'coffee-shop-secret-key-2024-change-in-production'
 }, async (payload, done) => {
   const user = await User.findById(payload.id);

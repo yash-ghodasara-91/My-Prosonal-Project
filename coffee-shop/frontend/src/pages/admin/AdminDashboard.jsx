@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../store/hooks';
 import { selectUser } from '../../store/userSlice';
+import { getAdminMessagesAPI } from '../../utils/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -16,15 +18,13 @@ const AdminDashboard = () => {
     }
 
     fetchStats();
+    fetchMessages();
   }, [user, navigate]);
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:5000/api/admin/stats', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -35,6 +35,19 @@ const AdminDashboard = () => {
       console.error('Error fetching stats:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMessages = async () => {
+    try {
+      const data = await getAdminMessagesAPI();
+      if (Array.isArray(data)) {
+        setMessages(data);
+      } else if (data && data.messages) {
+        setMessages(data.messages);
+      }
+    } catch {
+      setMessages([]);
     }
   };
 
@@ -118,6 +131,27 @@ const AdminDashboard = () => {
                           Order #{order._id.slice(-6)} - ${order.total.toFixed(2)}
                         </p>
                         <p className="text-xs text-text-secondary">{order.status}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+              <div className="lg:col-span-3 bg-primary dark:bg-primary-dark rounded-xl shadow-lg border-2 border-[#6B3410] p-6">
+                <h2 className="text-2xl font-serif text-[#8B4513] mb-4">Contact Messages</h2>
+                <div className="space-y-3">
+                  {messages.length === 0 ? (
+                    <p className="text-text-secondary">No messages</p>
+                  ) : (
+                    messages.slice(0, 10).map((m) => (
+                      <div key={m._id || m.id} className="border-b border-[#6B3410] pb-2">
+                        <p className="text-sm text-text-secondary">
+                          {(m.name || `${m.user?.firstName || ''} ${m.user?.lastName || ''}`.trim())} — {m.email || m.user?.email || ''}
+                        </p>
+                        <p className="text-xs text-text-secondary">{new Date(m.createdAt || Date.now()).toLocaleString()}</p>
+                        <p className="text-text-secondary mt-1">{m.message}</p>
                       </div>
                     ))
                   )}

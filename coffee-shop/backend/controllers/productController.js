@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const Category = require('../models/Category');
 
 const getAllProducts = async (req, res) => {
   const { search, category } = req.query;
@@ -32,6 +33,11 @@ const createProduct = async (req, res) => {
   const { name, description, price, category, rating, reviews, inStock } = req.body;
   const image = req.file ? `/uploads/products/${req.file.filename}` : '';
 
+  const categoryExists = await Category.findOne({ name: category });
+  if (!categoryExists) {
+    return res.status(400).json({ message: 'Invalid category' });
+  }
+
   const product = new Product({
     name,
     description,
@@ -50,6 +56,13 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { name, description, price, category, rating, reviews, inStock } = req.body;
   const updateData = { name, description, price, category, rating, reviews, inStock };
+
+  if (category) {
+    const categoryExists = await Category.findOne({ name: category });
+    if (!categoryExists) {
+      return res.status(400).json({ message: 'Invalid category' });
+    }
+  }
 
   if (req.file) {
     updateData.image = `/uploads/products/${req.file.filename}`;

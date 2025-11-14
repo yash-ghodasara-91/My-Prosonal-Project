@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { logout } from '../store/userSlice';
 import { selectCartItemsCount } from '../store/cartSlice';
 import { selectWishlistItems } from '../store/wishlistSlice';
 import { selectUser } from '../store/userSlice';
-import { toggleTheme, selectTheme } from '../store/themeSlice';
+import { } from '../store/themeSlice';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -16,7 +16,8 @@ const Header = () => {
   const cartItemsCount = useAppSelector(selectCartItemsCount);
   const user = useAppSelector(selectUser);
   const wishlistItems = useAppSelector(selectWishlistItems);
-  const theme = useAppSelector(selectTheme);
+  const userMenuRef = useRef(null);
+  
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -31,9 +32,26 @@ const Header = () => {
     navigate('/');
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (isUserMenuOpen && userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') setIsUserMenuOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isUserMenuOpen]);
+
   return (
     <header className="bg-[#8B4513] dark:bg-[#4a2410] shadow-xl border-b-2 border-[#6B3410] dark:border-[#2d1810] sticky top-0 z-50 animate-fadeIn">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="container mx-auto max-w-full px-10 py-4 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-3 group">
           <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#A0522D] via-[#8B4513] to-[#6B3410] flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 animate-bounce-slow">
             <span className="text-2xl">☕</span>
@@ -43,7 +61,7 @@ const Header = () => {
 
         <div className="hidden md:flex items-center space-x-8">
 
-          <nav className="flex space-x-6">
+          <nav className="flex space-x-8">
             <Link to="/" className="text-white hover:text-[#d4c4b0] transition-all duration-300 font-medium relative group py-2">
               <span className="relative z-10">Home</span>
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#A0522D] group-hover:w-full transition-all duration-300"></span>
@@ -81,28 +99,13 @@ const Header = () => {
             </button>
           </form>
 
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => dispatch(toggleTheme())}
-              className="text-white hover:text-[#d4c4b0] transition-all duration-300 p-2 rounded-lg hover:bg-white/20 backdrop-blur-sm hover:scale-110"
-              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-            >
-              {theme === 'light' ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              )}
-            </button>
+          <div className="flex items-center space-x-5">
             <Link to="/wishlist" className="relative text-white hover:text-[#d4c4b0] transition-all duration-300 hover:scale-110">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
               {wishlistItems.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#A0522D] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse-slow shadow-lg">
+                <span className="absolute -top-2.5 -right-2 bg-[#A0522D] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse-slow shadow-lg">
                   {wishlistItems.length}
                 </span>
               )}
@@ -112,19 +115,19 @@ const Header = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {cartItemsCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#A0522D] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse-slow shadow-lg">
+                <span className="absolute -top-2.5 -right-2 bg-[#A0522D] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-pulse-slow shadow-lg">
                   {cartItemsCount}
                 </span>
               )}
             </Link>
-            <div className="relative">
+            <div className="relative" ref={userMenuRef}>
               <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="text-white hover:text-[#d4c4b0] transition-all duration-300 hover:scale-110">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </button>
               {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1a0f0a] border-2 border-[#d4c4b0] dark:border-[#4a2410] rounded-xl shadow-2xl py-2 z-10 animate-slideIn backdrop-blur-sm">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1a0f0a] border-2 border-[#d4c4b0] dark:border-[#4a2410] rounded-xl shadow-2xl py-2 z-50 animate-slideIn backdrop-blur-sm">
                   {user ? (
                     <>
                       <Link to="/profile" className="block px-4 py-2 text-sm text-[#3d2817] dark:text-white hover:bg-[#f5f1eb] dark:hover:bg-[#2d1810] transition-colors">Your Profile</Link>
@@ -142,19 +145,68 @@ const Header = () => {
             </div>
           </div>
         </div>
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden text-white hover:text-[#d4c4b0] transition-colors duration-300"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-          </svg>
-        </button>
+        <div className="md:hidden flex items-center gap-3">
+          <Link to="/wishlist" className="relative text-white hover:text-[#d4c4b0] transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            {wishlistItems.length > 0 && (
+              <span className="absolute -top-1 right-0 bg-[#A0522D] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {wishlistItems.length}
+              </span>
+            )}
+          </Link>
+          <Link to="/cart" className="relative text-white hover:text-[#d4c4b0] transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            {cartItemsCount > 0 && (
+              <span className="absolute -top-1 right-0 bg-[#A0522D] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {cartItemsCount}
+              </span>
+            )}
+          </Link>
+          
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-white hover:text-[#d4c4b0] transition-colors duration-300"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+        </div>
       </div>
-      {/* Mobile Menu */}
+      
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-[#6B3410] dark:bg-[#2d1810] shadow-lg py-4 animate-slideIn border-t-2 border-[#4a2410] dark:border-[#1a0f0a]">
           <nav className="flex flex-col space-y-4 px-4">
+            <div className="flex items-center justify-between mb-2">
+              <form onSubmit={handleSearch} className="flex-1 mr-3 relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-white/95 text-[#3d2817] border-2 border-white/40 rounded-full px-4 py-2 pr-10 focus:outline-none"
+                />
+                <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8B4513]">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              </form>
+              <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="relative text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                {cartItemsCount > 0 && (
+                  <span className="absolute -top-1 right-0 bg-[#A0522D] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {cartItemsCount}
+                  </span>
+                )}
+              </Link>
+            </div>
             <Link to="/" className="text-white hover:text-[#d4c4b0] transition-colors font-medium py-2" onClick={() => setIsMenuOpen(false)}>Home</Link>
             <Link to="/menu" className="text-white hover:text-[#d4c4b0] transition-colors font-medium py-2" onClick={() => setIsMenuOpen(false)}>Menu</Link>
             <Link to="/blog" className="text-white hover:text-[#d4c4b0] transition-colors font-medium py-2" onClick={() => setIsMenuOpen(false)}>Blog</Link>
@@ -174,23 +226,7 @@ const Header = () => {
                 </>
               )}
             </div>
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => dispatch(toggleTheme())}
-                className="text-white hover:text-[#d4c4b0] transition-colors p-2 rounded-lg hover:bg-white/20 backdrop-blur-sm hover:scale-110"
-                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-              >
-                {theme === 'light' ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                )}
-              </button>
-            </div>
+            
           </nav>
         </div>
       )}

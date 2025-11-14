@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { selectWishlistItems, removeFromWishlist } from '../store/wishlistSlice';
-import { addToCart } from '../store/cartSlice';
+import { selectWishlistItems, setWishlistItems } from '../store/wishlistSlice';
+import { setCartItems } from '../store/cartSlice';
+import { addToCartAPI, getCartAPI, removeFromWishlistAPI, getWishlistAPI } from '../utils/api';
+import { selectUser } from '../store/userSlice';
 
 const Wishlist = () => {
   const dispatch = useAppDispatch();
   const wishlistItems = useAppSelector(selectWishlistItems);
+  const user = useAppSelector(selectUser);
 
   if (wishlistItems.length === 0) {
     return (
@@ -63,16 +66,57 @@ const Wishlist = () => {
                 <p className="text-accent text-lg font-semibold">${item.price.toFixed(2)}</p>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => {
-                      dispatch(addToCart({ product: item }));
-                      dispatch(removeFromWishlist(item.id));
+                    onClick={async () => {
+                      if (!user) {
+                        alert('Please login to add items to cart!');
+                        return;
+                      }
+                      await addToCartAPI(item.id, 1);
+                      const cart = await getCartAPI();
+                      if (cart && cart.items) {
+                        const mappedCart = cart.items.map(ci => ({
+                          id: ci.product._id,
+                          name: ci.product.name,
+                          description: ci.product.description,
+                          price: ci.product.price,
+                          image: ci.product.image?.startsWith('http') ? ci.product.image : (ci.product.image ? `http://localhost:5000${ci.product.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+                          quantity: ci.quantity,
+                          cartItemId: ci._id
+                        }));
+                        dispatch(setCartItems(mappedCart));
+                      }
+                      await removeFromWishlistAPI(item.id);
+                      const wishlist = await getWishlistAPI();
+                      if (wishlist && wishlist.products) {
+                        const mapped = wishlist.products.map(p => ({
+                          id: p._id,
+                          name: p.name,
+                          description: p.description,
+                          price: p.price,
+                          image: p.image?.startsWith('http') ? p.image : (p.image ? `http://localhost:5000${p.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+                        }));
+                        dispatch(setWishlistItems(mapped));
+                      }
                     }}
                     className="bg-accent text-primary px-4 py-2  hover:bg-[#8B4513] border-2 border-[#6B3410] hover:text-white rounded-lg text-sm font-semibold hover:bg-opacity-90 transition-colors"
                   >
                     Add to Cart
                   </button>
                   <button
-                    onClick={() => dispatch(removeFromWishlist(item.id))}
+                    onClick={async () => {
+                      await removeFromWishlistAPI(item.id);
+                      const wishlist = await getWishlistAPI();
+                      if (wishlist && wishlist.products) {
+                        const mapped = wishlist.products.map(p => ({
+                          id: p._id,
+                          name: p.name,
+                          description: p.description,
+                          price: p.price,
+                          image: p.image?.startsWith('http') ? p.image : (p.image ? `http://localhost:5000${p.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+                        }));
+                        dispatch(setWishlistItems(mapped));
+                      }
+                    }}
                     className="text-red-400 hover:text-red-300 transition-colors"
                   >
                     <svg

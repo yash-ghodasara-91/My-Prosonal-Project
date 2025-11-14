@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getProductByIdAPI, addToCartAPI, addToWishlistAPI, removeFromWishlistAPI, getWishlistAPI } from '../utils/api';
+import { getProductByIdAPI, addToCartAPI, addToWishlistAPI, removeFromWishlistAPI, getWishlistAPI, getCartAPI } from '../utils/api';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { addToCart } from '../store/cartSlice';
+import { setCartItems } from '../store/cartSlice';
+import { setWishlistItems } from '../store/wishlistSlice';
 import { selectUser } from '../store/userSlice';
 
 const ProductDetail = () => {
@@ -35,6 +36,14 @@ const ProductDetail = () => {
     if (wishlist && wishlist.products) {
       const found = wishlist.products.some(p => p._id === id || p === id);
       setIsInWishlist(found);
+      const mapped = wishlist.products.map(p => ({
+        id: p._id,
+        name: p.name,
+        description: p.description,
+        price: p.price,
+        image: p.image?.startsWith('http') ? p.image : (p.image ? `http://localhost:5000${p.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+      }));
+      dispatch(setWishlistItems(mapped));
   }
   };
 
@@ -46,7 +55,19 @@ const ProductDetail = () => {
     }
     
     await addToCartAPI(id, quantity);
-    dispatch(addToCart({ product, quantity }));
+    const cart = await getCartAPI();
+    if (cart && cart.items) {
+      const mapped = cart.items.map(ci => ({
+        id: ci.product._id,
+        name: ci.product.name,
+        description: ci.product.description,
+        price: ci.product.price,
+        image: ci.product.image?.startsWith('http') ? ci.product.image : (ci.product.image ? `http://localhost:5000${ci.product.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+        quantity: ci.quantity,
+        cartItemId: ci._id
+      }));
+      dispatch(setCartItems(mapped));
+    }
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
@@ -61,9 +82,11 @@ const ProductDetail = () => {
     if (isInWishlist) {
       await removeFromWishlistAPI(id);
       setIsInWishlist(false);
+      await checkWishlist();
     } else {
       await addToWishlistAPI(id);
       setIsInWishlist(true);
+      await checkWishlist();
     }
   };
 

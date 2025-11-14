@@ -1,8 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const getInitialWishlist = () => {
-  const saved = localStorage.getItem('wishlistItems');
-  return saved ? JSON.parse(saved) : [];
+  return [];
 };
 
 const wishlistSlice = createSlice({
@@ -15,17 +14,18 @@ const wishlistSlice = createSlice({
       const product = action.payload;
       if (!state.items.find(item => item.id === product.id)) {
         state.items.push(product);
-        localStorage.setItem('wishlistItems', JSON.stringify(state.items));
       }
     },
     removeFromWishlist: (state, action) => {
       state.items = state.items.filter(item => item.id !== action.payload);
-      localStorage.setItem('wishlistItems', JSON.stringify(state.items));
+    },
+    setWishlistItems: (state, action) => {
+      state.items = action.payload;
     },
   },
 });
 
-export const { addToWishlist, removeFromWishlist } = wishlistSlice.actions;
+export const { addToWishlist, removeFromWishlist, setWishlistItems } = wishlistSlice.actions;
 
 export const selectWishlistItems = (state) => state.wishlist.items;
 export const selectIsInWishlist = (productId) => (state) => {

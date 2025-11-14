@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { selectUser, logout } from '../store/userSlice';
+import { selectUser, logout, updateUser } from '../store/userSlice';
+import { updateMeAPI } from '../utils/api';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -16,6 +17,18 @@ const Profile = () => {
     city: user?.city || '',
     zipCode: user?.zipCode || '',
   });
+  useEffect(() => {
+    if (!user) return;
+    setFormData({
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      address: user.address || '',
+      city: user.city || '',
+      zipCode: user.zipCode || '',
+    });
+  }, [user]);
 
   if (!user) {
     return (
@@ -37,10 +50,26 @@ const Profile = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, this would update the user profile
-    alert('Profile updated successfully!');
+    const payload = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      zipCode: formData.zipCode,
+    };
+    try {
+      const data = await updateMeAPI(payload);
+      if (data && data.user) {
+        dispatch(updateUser(data.user));
+        alert('Profile updated successfully!');
+      }
+    } catch (err) {
+      alert('Failed to update profile');
+    }
   };
 
   const handleLogout = () => {

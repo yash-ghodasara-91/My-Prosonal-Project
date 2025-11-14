@@ -27,6 +27,7 @@ const AdminLogin = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
+        credentials: 'include'
       });
 
       const data = await response.json();
@@ -41,11 +42,10 @@ const AdminLogin = () => {
         return;
       }
 
-      // Save token and user
-      localStorage.setItem('token', data.token);
       dispatch(login(data.user));
       navigate('/admin/dashboard');
     } catch (err) {
+      console.error(err);
       setError('Something went wrong. Please try again.');
     }
   };

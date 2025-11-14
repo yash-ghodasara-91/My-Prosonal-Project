@@ -26,6 +26,13 @@ const signup = async (req, res) => {
   // Generate token
   const token = generateToken(user);
 
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  });
+
   res.status(201).json({
     message: 'User created successfully',
     token,
@@ -50,6 +57,13 @@ const login = (req, res, next) => {
 
     const token = generateToken(user);
 
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
     res.json({
       message: 'Login successful',
       token,
@@ -69,4 +83,22 @@ const getMe = async (req, res) => {
   res.json({ user });
 };
 
-module.exports = { signup, login, getMe };
+const updateMe = async (req, res) => {
+  const allowed = ['firstName', 'lastName', 'phone', 'address', 'city', 'zipCode'];
+  const updates = {};
+  for (const key of allowed) {
+    if (Object.prototype.hasOwnProperty.call(req.body, key)) {
+      updates[key] = req.body[key];
+    }
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    updates,
+    { new: true, runValidators: true }
+  ).select('-password');
+
+  res.json({ user });
+};
+
+module.exports = { signup, login, getMe, updateMe };

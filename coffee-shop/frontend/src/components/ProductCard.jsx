@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { addToCart } from '../store/cartSlice';
-import { addToWishlist, removeFromWishlist, selectIsInWishlist } from '../store/wishlistSlice';
+import { setCartItems } from '../store/cartSlice';
+import { addToCartAPI, getCartAPI } from '../utils/api';
+import { setWishlistItems, selectIsInWishlist } from '../store/wishlistSlice';
+import { addToWishlistAPI, removeFromWishlistAPI, getWishlistAPI } from '../utils/api';
 import { selectUser } from '../store/userSlice';
 
 const ProductCard = ({ product }) => {
@@ -12,7 +14,7 @@ const ProductCard = ({ product }) => {
   const isInWishlist = useAppSelector(selectIsInWishlist(productId));
   const user = useAppSelector(selectUser);
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (!user) {
@@ -20,16 +22,45 @@ const ProductCard = ({ product }) => {
       navigate('/login');
       return;
     }
-    dispatch(addToCart({ product }));
+    await addToCartAPI(productId, 1);
+    const cart = await getCartAPI();
+    if (cart && cart.items) {
+      const mapped = cart.items.map(ci => ({
+        id: ci.product._id,
+        name: ci.product.name,
+        description: ci.product.description,
+        price: ci.product.price,
+        image: ci.product.image?.startsWith('http') ? ci.product.image : (ci.product.image ? `http://localhost:5000${ci.product.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+        quantity: ci.quantity,
+        cartItemId: ci._id
+      }));
+      dispatch(setCartItems(mapped));
+    }
   };
 
-  const handleWishlistToggle = (e) => {
+  const handleWishlistToggle = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!user) {
+      alert('Please login to add items to wishlist!');
+      navigate('/login');
+      return;
+    }
     if (isInWishlist) {
-      dispatch(removeFromWishlist(productId));
+      await removeFromWishlistAPI(productId);
     } else {
-      dispatch(addToWishlist(product));
+      await addToWishlistAPI(productId);
+    }
+    const wishlist = await getWishlistAPI();
+    if (wishlist && wishlist.products) {
+      const mapped = wishlist.products.map(p => ({
+        id: p._id,
+        name: p.name,
+        description: p.description,
+        price: p.price,
+        image: p.image?.startsWith('http') ? p.image : (p.image ? `http://localhost:5000${p.image}` : 'https://images.unsplash.com/photo-1511920170033-f8396924c348'),
+      }));
+      dispatch(setWishlistItems(mapped));
     }
   };
 
