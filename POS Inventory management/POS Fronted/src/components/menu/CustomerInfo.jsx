@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { formatData, getAvtarName } from "../utils";
+import { formatData, getAvtarName } from "../../utils";
 
 const CustomerInfo = () => {
   const [dateTime] = useState(new Date());

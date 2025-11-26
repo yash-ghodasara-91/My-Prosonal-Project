@@ -1,5 +1,5 @@
 import React from "react";
-import { getBgColor } from "../utils";
+import { getBgColor } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateTable } from "../../redux/slices/customerSlice";
